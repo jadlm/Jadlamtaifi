@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Float, Html } from '@react-three/drei';
 
@@ -10,7 +10,7 @@ const tags = [
   '<ul/>', '<li/>', 'HTML', 'CSS', 'JS', 'TS', 'React', 'Node'
 ];
 
-const FloatingTags = ({ count = 40 }) => {
+const FloatingTags = ({ count = 24 }) => {
   const group = useRef();
 
   const items = useMemo(() => {
@@ -86,17 +86,33 @@ const FloatingTag = ({ tag, position, rotation, scale, color, speed, delay }) =>
 };
 
 const Scene3D = () => {
+  const [enabled, setEnabled] = useState(false);
+
+  useEffect(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isSmallScreen = window.matchMedia('(max-width: 900px)').matches;
+    const hasCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
+    const saveData = navigator.connection?.saveData;
+
+    if (!prefersReducedMotion && !isSmallScreen && !hasCoarsePointer && !saveData) {
+      const id = window.setTimeout(() => setEnabled(true), 900);
+      return () => window.clearTimeout(id);
+    }
+  }, []);
+
+  if (!enabled) return null;
+
   return (
     <div className="fixed inset-0 z-0 pointer-events-none opacity-15">
       <Canvas
         camera={{ position: [0, 0, 10], fov: 60 }}
-        dpr={[1, 2]}
-        gl={{ antialias: true, alpha: true }}
+        dpr={[1, 1.25]}
+        gl={{ antialias: false, alpha: true, powerPreference: 'low-power' }}
       >
         <ambientLight intensity={0.55} />
         <directionalLight position={[5, 5, 5]} intensity={0.35} />
         <pointLight position={[-5, -5, 5]} intensity={0.15} />
-        <FloatingTags count={45} />
+        <FloatingTags count={24} />
       </Canvas>
     </div>
   );

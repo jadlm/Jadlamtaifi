@@ -1,17 +1,18 @@
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { ReactLenis } from 'lenis/react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
-import About from './components/About';
-import Skills from './components/Skills';
-import Projects from './components/Projects';
-import Experience from './components/Experience';
-import Services from './components/Services';
-import Contact from './components/Contact';
-import Footer from './components/Footer';
 import CustomCursor from './components/CustomCursor';
 import LoadingScreen from './components/LoadingScreen';
-import Scene3D from './components/Scene3D';
+
+const About = lazy(() => import('./components/About'));
+const Skills = lazy(() => import('./components/Skills'));
+const Projects = lazy(() => import('./components/Projects'));
+const Experience = lazy(() => import('./components/Experience'));
+const Services = lazy(() => import('./components/Services'));
+const Contact = lazy(() => import('./components/Contact'));
+const Footer = lazy(() => import('./components/Footer'));
+const Scene3D = lazy(() => import('./components/Scene3D'));
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -32,7 +33,9 @@ function App() {
           <div className="noise-overlay" />
           
           <div className="relative z-0 min-h-screen selection:bg-cyan-500/30 selection:text-white">
-            <Scene3D />
+            <Suspense fallback={null}>
+              <Scene3D />
+            </Suspense>
             
             <div className="relative z-10">
               <Navbar />
@@ -40,44 +43,48 @@ function App() {
               <main>
                 <Hero />
                 
-                <div className="max-w-7xl mx-auto px-4 md:px-8">
-                  <div className="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent my-10" />
-                </div>
-                
-                <About />
-                
-                <div className="max-w-7xl mx-auto px-4 md:px-8">
-                  <div className="h-px w-full bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent my-10" />
-                </div>
-                
-                <Skills />
-                
-                <div className="max-w-7xl mx-auto px-4 md:px-8">
-                  <div className="h-px w-full bg-gradient-to-r from-transparent via-magenta-500/20 to-transparent my-10" />
-                </div>
-                
-                <Projects />
-                
-                <div className="max-w-7xl mx-auto px-4 md:px-8">
-                  <div className="h-px w-full bg-gradient-to-r from-transparent via-blue-500/20 to-transparent my-10" />
-                </div>
-                
-                <Experience />
-                
-                <div className="max-w-7xl mx-auto px-4 md:px-8">
-                  <div className="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent my-10" />
-                </div>
-                
-                <Services />
-                
-                <div className="max-w-7xl mx-auto px-4 md:px-8">
-                  <div className="h-px w-full bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent my-10" />
-                </div>
-                
-                <Contact />
+                <Suspense fallback={null}>
+                  <div className="max-w-7xl mx-auto px-4 md:px-8">
+                    <div className="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent my-10" />
+                  </div>
+                  
+                  <About />
+                  
+                  <div className="max-w-7xl mx-auto px-4 md:px-8">
+                    <div className="h-px w-full bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent my-10" />
+                  </div>
+                  
+                  <Skills />
+                  
+                  <div className="max-w-7xl mx-auto px-4 md:px-8">
+                    <div className="h-px w-full bg-gradient-to-r from-transparent via-magenta-500/20 to-transparent my-10" />
+                  </div>
+                  
+                  <Projects />
+                  
+                  <div className="max-w-7xl mx-auto px-4 md:px-8">
+                    <div className="h-px w-full bg-gradient-to-r from-transparent via-blue-500/20 to-transparent my-10" />
+                  </div>
+                  
+                  <Experience />
+                  
+                  <div className="max-w-7xl mx-auto px-4 md:px-8">
+                    <div className="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent my-10" />
+                  </div>
+                  
+                  <Services />
+                  
+                  <div className="max-w-7xl mx-auto px-4 md:px-8">
+                    <div className="h-px w-full bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent my-10" />
+                  </div>
+                  
+                  <Contact />
+                </Suspense>
               </main>
               
-              <Footer />
+              <Suspense fallback={null}>
+                <Footer />
+              </Suspense>
             </div>
           </div>
         </ReactLenis>

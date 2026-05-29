@@ -6,27 +6,28 @@ const LoadingScreen = ({ onComplete }) => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    // Simulate loading sequence
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setTimeout(() => {
-            setIsLoaded(true);
-            setTimeout(() => {
-              if (onComplete) onComplete();
-            }, 1000); // Wait for split animation to finish
-          }, 500);
-          return 100;
-        }
-        
-        // Randomize loading speed for realism
-        const increment = Math.floor(Math.random() * 10) + 1;
-        return Math.min(prev + increment, 100);
-      });
-    }, 100);
+    const duration = 450;
+    const start = performance.now();
+    let frameId;
 
-    return () => clearInterval(interval);
+    const tick = (now) => {
+      const nextProgress = Math.min(((now - start) / duration) * 100, 100);
+      setProgress(Math.round(nextProgress));
+
+      if (nextProgress < 100) {
+        frameId = requestAnimationFrame(tick);
+        return;
+      }
+
+      setIsLoaded(true);
+      window.setTimeout(() => {
+        if (onComplete) onComplete();
+      }, 350);
+    };
+
+    frameId = requestAnimationFrame(tick);
+
+    return () => cancelAnimationFrame(frameId);
   }, [onComplete]);
 
   return (
@@ -35,20 +36,20 @@ const LoadingScreen = ({ onComplete }) => {
         <motion.div
           className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#050505] overflow-hidden"
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.8, ease: "easeInOut" }}
+          transition={{ duration: 0.35, ease: "easeInOut" }}
         >
           {/* Top Half Exit Animation */}
           <motion.div 
             className="absolute top-0 left-0 w-full h-1/2 bg-[#050505] z-10"
             exit={{ y: "-100%" }}
-            transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
+            transition={{ duration: 0.35, ease: [0.76, 0, 0.24, 1] }}
           />
           
           {/* Bottom Half Exit Animation */}
           <motion.div 
             className="absolute bottom-0 left-0 w-full h-1/2 bg-[#050505] z-10"
             exit={{ y: "100%" }}
-            transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
+            transition={{ duration: 0.35, ease: [0.76, 0, 0.24, 1] }}
           />
 
           <div className="relative z-20 flex flex-col items-center w-full max-w-sm px-6">
